@@ -1,17 +1,19 @@
 fun main() {
-    fun part1(input: List<String>): Int {
-        return input.size
+    object : Day<Int, Int>("01") {
+        override fun part1(): Int {
+            return inputGroups.maxOf { elf -> elf.sumOf { it.toInt() } }
+        }
+
+        override fun part2(): Int {
+            return inputGroups.fold(IntArray(3)) { acc, elf ->
+                acc[2] = maxOf(acc[2], elf.sumOf { it.toInt() })
+                if (acc[2] > acc[1]) acc[2] = acc[1].also { acc[1] = acc[2] }
+                if (acc[1] > acc[0]) acc[1] = acc[0].also { acc[0] = acc[1] }
+                acc
+            }.sum()
+        }
+    }.run {
+        solve1(24000)
+        solve2(45000)
     }
-
-    fun part2(input: List<String>): Int {
-        return input.size
-    }
-
-    // test if implementation meets criteria from the description, like:
-    val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
-
-    val input = readInput("Day01")
-    println(part1(input))
-    println(part2(input))
 }
