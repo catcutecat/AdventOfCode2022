@@ -1,5 +1,5 @@
 fun main() {
-    object : Day<Int, Int>("01") {
+    object : Day<Int, Int, Any>("01") {
         override fun part1(): Int {
             return inputGroups.maxOf { elf -> elf.sumOf { it.toInt() } }
         }
@@ -13,7 +13,7 @@ fun main() {
             }.sum()
         }
     }.run {
-        solve1(24000)
-        solve2(45000)
+        solve1(24000) // 74711
+        solve2(45000) // 209481
     }
 }
