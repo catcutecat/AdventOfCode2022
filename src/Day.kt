@@ -11,9 +11,9 @@ abstract class Day<T, E, P>(index: String) {
     private val testInputLines: List<String> by lazy { readInputLines(testInput) }
     private val testInputGroups: List<List<String>> by lazy { readInputGroups(testInput) }
 
-    protected lateinit var parseInput: (List<String>) -> List<P>
-    private val parsedTestInput: List<P> by lazy { parseInput(testInputLines) }
-    private val parsedPuzzleInput: List<P> by lazy { parseInput(puzzleInputLines) }
+    protected lateinit var parse: (List<String>) -> List<P>
+    private val parsedTestInput: List<P> by lazy { parse(testInputLines) }
+    private val parsedPuzzleInput: List<P> by lazy { parse(puzzleInputLines) }
 
     protected val inputLines: List<String> get() = if (testing) testInputLines else puzzleInputLines
     protected val inputGroups: List<List<String>> get() = if (testing) testInputGroups else puzzleInputGroups

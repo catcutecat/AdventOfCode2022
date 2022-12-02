@@ -1,7 +1,7 @@
 fun main() {
     object : Day<Int, Int, Pair<Int, Int>>("02") {
         init {
-            parseInput = { it.map { s -> s[0] - 'A' to s[2] - 'X' } }
+            parse = { it.map { s -> s[0] - 'A' to s[2] - 'X' } }
         }
 
         override fun part1() = parsedInput.sumOf { (a, b) ->
