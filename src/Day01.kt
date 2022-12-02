@@ -1,19 +1,12 @@
 fun main() {
-    object : Day<Int, Int, Any>("01") {
-        override fun part1(): Int {
-            return inputGroups.maxOf { elf -> elf.sumOf { it.toInt() } }
-        }
-
-        override fun part2(): Int {
-            return inputGroups.fold(IntArray(3)) { acc, elf ->
-                acc[2] = maxOf(acc[2], elf.sumOf { it.toInt() })
-                if (acc[2] > acc[1]) acc[2] = acc[1].also { acc[1] = acc[2] }
-                if (acc[1] > acc[0]) acc[1] = acc[0].also { acc[0] = acc[1] }
-                acc
-            }.sum()
-        }
-    }.run {
+    Day01.run {
         solve1(24000) // 74711
         solve2(45000) // 209481
     }
+}
+
+object Day01 : Day.GroupInput<Int, Int>("01", { elf -> elf.sumOf { cal -> cal.toInt() } }) {
+    override fun part1(input: List<Int>) = input.max()
+
+    override fun part2(input: List<Int>) = input.sortedDescending().take(3).sum()
 }
