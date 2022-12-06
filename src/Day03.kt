@@ -5,7 +5,8 @@ fun main() {
     }
 }
 
-object Day03 : Day.LineInput<String, Int>("03", { it }) {
+object Day03 : Day.LineInput<List<String>, Int>("03") {
+
     private val Char.priority get() = when(this) {
         in 'a'..'z' -> this - 'a' + 1
         in 'A'..'Z' -> this - 'A' + 27
@@ -17,7 +18,9 @@ object Day03 : Day.LineInput<String, Int>("03", { it }) {
         .reduce { acc, chars -> acc intersect chars }
         .single().priority
 
-    override fun part1(input: List<String>) = input.sumOf { it.chunked(it.length / 2).let(::findCommon) }
+    override fun parse(input: List<String>) = input
 
-    override fun part2(input: List<String>) = input.chunked(3).sumOf(::findCommon)
+    override fun part1(data: List<String>) = data.sumOf { it.chunked(it.length / 2).let(::findCommon) }
+
+    override fun part2(data: List<String>) = data.chunked(3).sumOf(::findCommon)
 }

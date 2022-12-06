@@ -5,7 +5,7 @@ fun main() {
     }
 }
 
-object Day06 : Day.LineInput<String, List<Int>>("06", { it }) {
+object Day06 : Day.LineInput<List<String>, List<Int>>("06") {
 
     private fun findStartMaker(size: Int, s: String): Int {
         val exist = BooleanArray(26)
@@ -18,8 +18,9 @@ object Day06 : Day.LineInput<String, List<Int>>("06", { it }) {
         error("Invalid input: size=$size, string=$s")
     }
 
-    override fun part1(input: List<String>) = input.map { findStartMaker(4, it) }
+    override fun parse(input: List<String>) = input
 
-    override fun part2(input: List<String>) = input.map { findStartMaker(14, it) }
+    override fun part1(data: List<String>) = data.map { findStartMaker(4, it) }
 
+    override fun part2(data: List<String>) = data.map { findStartMaker(14, it) }
 }

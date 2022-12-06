@@ -5,8 +5,11 @@ fun main() {
     }
 }
 
-object Day01 : Day.GroupInput<Int, Int>("01", { elf -> elf.sumOf { cal -> cal.toInt() } }) {
-    override fun part1(input: List<Int>) = input.max()
+object Day01 : Day.GroupInput<List<Int>, Int>("01") {
 
-    override fun part2(input: List<Int>) = input.sortedDescending().take(3).sum()
+    override fun parse(input: List<List<String>>) = input.map { elf -> elf.sumOf { cal -> cal.toInt() } }
+
+    override fun part1(data: List<Int>) = data.max()
+
+    override fun part2(data: List<Int>) = data.sortedDescending().take(3).sum()
 }
