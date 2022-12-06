@@ -1,3 +1,5 @@
+import kotlin.system.measureTimeMillis
+
 abstract class Day<DATA, RESULT>(index: String) {
 
     protected val testInputName = "Day${index}_test"
@@ -31,12 +33,20 @@ abstract class Day<DATA, RESULT>(index: String) {
     }
 
     fun solve1(testResult: RESULT) {
-        check(part1(testInput) == testResult)
-        println("Part One: ${part1(puzzleInput)}")
+        val testTime = measureTimeMillis { check(part1(testInput) == testResult) }
+        val res: RESULT
+        val time = measureTimeMillis {
+            res = part1(puzzleInput)
+        }
+        println("Part One: $res ($time ms)(test $testTime ms)")
     }
 
     fun solve2(testResult: RESULT) {
-        check(part2(testInput) == testResult)
-        println("Part Two: ${part2(puzzleInput)}")
+        val testTime = measureTimeMillis { check(part2(testInput) == testResult) }
+        val res: RESULT
+        val time = measureTimeMillis {
+            res = part2(puzzleInput)
+        }
+        println("Part Two: $res ($time ms)(test $testTime ms)")
     }
 }
