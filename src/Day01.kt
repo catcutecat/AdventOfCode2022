@@ -1,8 +1,12 @@
+import kotlin.system.measureTimeMillis
+
 fun main() {
-    Day01.run {
-        solve1(24000) // 74711
-        solve2(45000) // 209481
-    }
+    measureTimeMillis {
+        Day01.run {
+            solve1(24000) // 74711
+            solve2(45000) // 209481
+        }
+    }.let { println("Total: $it ms") }
 }
 
 object Day01 : Day.GroupInput<List<Int>, Int>("01") {

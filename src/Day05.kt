@@ -1,10 +1,13 @@
 import java.util.*
+import kotlin.system.measureTimeMillis
 
 fun main() {
-    Day05.run {
-        solve1("CMZ") // "CWMTGHBDW"
-        solve2("MCD") // "SSCGWJCRB"
-    }
+    measureTimeMillis {
+        Day05.run {
+            solve1("CMZ") // "CWMTGHBDW"
+            solve2("MCD") // "SSCGWJCRB"
+        }
+    }.let { println("Total: $it ms") }
 }
 
 object Day05 : Day.RowInput<Day05.SupplyStacks, String>("05") {
