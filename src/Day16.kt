@@ -44,12 +44,12 @@ object Day16 : Day.LineInput<Day16.Data, Int>("16") {
 
     override fun parse(input: List<String>): Data {
         val matchResults = input.map {
-            Regex("Valve ([A-Z]{2}) has flow rate=(\\d+); tunnels? leads? to valves? ([\\s\\S]+)")
+            Regex("""Valve ([A-Z]{2}) has flow rate=(\d+); tunnels? leads? to valves? ([A-Z, ]+)""")
             .matchEntire(it)!!.groupValues
         }
         val valveIndex = matchResults.withIndex().associate { it.value[1] to it.index }
         val valves = matchResults.map {
-            Valve(it[2].toInt(), it[3].split(", ").map { valveIndex[it]!! })
+            Valve(it[2].toInt(), it[3].split(", ").map { valve -> valveIndex[valve]!! })
         }
 
         val minDistance = MutableList(valves.size) { MutableList(valves.size) { valves.size } }

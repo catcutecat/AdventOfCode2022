@@ -11,7 +11,7 @@ fun main() {
 
 object Day17 : Day.RowInput<Day17.Data, Long>("17") {
 
-    data class Data(val directions: List<Direction>) {
+    data class Data(private val directions: List<Direction>) {
 
         private val rockSequence = listOf(
             Rock(listOf(0 to 0, 0 to 1, 0 to 2, 0 to 3), 1),
@@ -88,11 +88,8 @@ object Day17 : Day.RowInput<Day17.Data, Long>("17") {
 
     override fun part2(data: Data) = data.fallingRocks(1000000000000L)
 
-    enum class Direction {
-        LEFT, RIGHT, DOWN, INIT;
-
-        val dy get() = if (this == DOWN) -1 else 0
-        val dx get() = if (this == LEFT) -1 else if (this == RIGHT) 1 else 0
+    enum class Direction(val dy: Int, val dx: Int) {
+        LEFT(0, -1), RIGHT(0, 1), DOWN(-1, 0), INIT(0, 0);
     }
 
     class Rock(private val points: List<Pair<Int, Int>>, val height: Int) {

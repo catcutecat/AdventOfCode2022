@@ -1,3 +1,4 @@
+import java.util.*
 import kotlin.math.abs
 import kotlin.system.measureTimeMillis
 
@@ -14,58 +15,38 @@ object Day15 : Day.GroupInput<Day15.Data, Long>("15") {
 
     class Data(private val positions: List<List<Int>>, val targetY: Int, val searchArea: Int) {
 
-        fun coveredIntervals(y: Int): List<Pair<Int, Int>> {
-            val res = mutableListOf<Pair<Int, Int>>()
-            for ((sx, sy, bx, by) in positions) {
-                val distance = abs(sx - bx) + abs(sy - by)
-                val distanceX = distance - abs(sy - y)
-                if (distanceX >= 0) {
-                    res.add(sx - distanceX to sx + distanceX)
-                }
+        fun coveredIntervalsAt(y: Int): Stack<Pair<Int, Int>> = positions.mapNotNull { (sx, sy, bx, by) ->
+            val distance = abs(sx - bx) + abs(sy - by)
+            val distanceX = distance - abs(sy - y)
+            distanceX.takeIf { it >= 0 }?.let { sx - it to sx + it + 1 }
+        }.sortedBy { it.first }.fold(Stack<Pair<Int, Int>>()) { acc, (start, end) ->
+            acc.apply {
+                if (isEmpty() || peek().second < start) add(start to end)
+                else if (peek().second < end) push(pop().first to end)
             }
-            res.sortWith(compareBy({ it.first }, { it.second }))
-            return res
         }
 
-        fun beaconCount(y: Int) = positions.filter { it[3] == y }.map { it[2] }.toSet().size
+        fun beaconCountAt(y: Int): Int = positions.map { it[2] to it[3] }.toSet().count { it.second == y }
     }
 
     override fun parse(input: List<List<String>>): Data {
         val positions = input[0].map {
-            Regex("Sensor at x=(-?\\d+), y=(-?\\d+): closest beacon is at x=(-?\\d+), y=(-?\\d+)")
-                .matchEntire(it)!!.groupValues.drop(1).map(String::toInt)
+            Regex("""Sensor at x=(-?\d+), y=(-?\d+): closest beacon is at x=(-?\d+), y=(-?\d+)""")
+                .matchEntire(it)!!.destructured.toList().map(String::toInt)
         }
         val (targetY, searchArea) = input[1].map(String::toInt)
         return Data(positions, targetY, searchArea)
     }
 
-    override fun part1(data: Data) = data.run {
-        val intervals = coveredIntervals(targetY) + listOf(Int.MAX_VALUE to Int.MAX_VALUE)
-        var currStart = intervals.first().first
-        var currEnd = intervals.first().second
-        var coveredLength = 0L
-        for ((start, end) in intervals) {
-            if (start > currEnd) {
-                coveredLength += currEnd - currStart + 1
-                currStart = start
-            }
-            currEnd = maxOf(currEnd, end)
-        }
-
-        coveredLength - beaconCount(targetY)
+    override fun part1(data: Data) = with(data) {
+        coveredIntervalsAt(targetY).sumOf { it.second - it.first } - beaconCountAt(targetY).toLong()
     }
 
-    override fun part2(data: Data) = data.run {
-        for (y in 0..searchArea) {
-            val intervals = coveredIntervals(y)
-            var currEnd = intervals.first().second
-            for ((start, end) in intervals) {
-                if (start > currEnd + 1) {
-                    return@run (start - 1) * 4000000L + y
-                }
-                currEnd = maxOf(currEnd, end)
+    override fun part2(data: Data) = with(data) {
+        (0..searchArea).firstNotNullOf { y ->
+            coveredIntervalsAt(y).takeIf { it.size == 2 }?.let { (a, _) ->
+                a.second * 4000000L + y
             }
         }
-        error("Should not reach here.")
     }
 }
