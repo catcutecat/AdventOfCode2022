@@ -14,13 +14,11 @@ object Day20 : Day.LineInput<List<Int>, Long>("20") {
     override fun parse(input: List<String>) = input.map(String::toInt)
 
     private class Node(val value: Int, var next: Node? = null, var prev: Node? = null) {
-        fun move(mod: Int, mul: Long = 1L) {
-            mod > 0 || return
-            val step = ((value % mod + mod) * mul % mod).toInt()
-            step > 0 || return
 
-            var targetNode = this
-            repeat(step) { targetNode = targetNode.next!! }
+        fun move(mod: Int, mul: Long = 1L) {
+            require(mod > 0) { "Value of mod $mod is less than or equal to zero." }
+            val step = ((value % mod + mod) * mul % mod).toInt().takeIf { it > 0 } ?: return
+            val targetNode = getNext(step)
             prev!!.next = next
             next!!.prev = prev
             prev = targetNode
@@ -28,30 +26,23 @@ object Day20 : Day.LineInput<List<Int>, Long>("20") {
             next!!.prev = this
             prev!!.next = this
         }
+
+        fun getNext(step: Int): Node = generateSequence(this) { it.next!! }.take(step + 1).last()
     }
 
-    private fun linkedList(values: List<Int>) = values.map { Node(it) }.also {
+    private fun linkedList(values: List<Int>) = values.map(::Node).also {
         for ((i, node) in it.withIndex()) {
-            node.next = if (i + 1 < it.size) it[i + 1] else it[0]
-            node.prev = if (i > 0) it[i - 1] else it.last()
+            node.next = it[(i + 1) % it.size]
+            node.prev = it[(i + it.size - 1) % it.size]
         }
     }
 
-    private fun getSum(nodes: List<Node>): Long {
-        var curr = nodes.first { it.value == 0 }
-        var sum = 0L
-        repeat(3) {
-            repeat(1000 % nodes.size) {
-                curr = curr.next!!
-            }
-            sum += curr.value
-        }
-        return sum
-    }
+    private fun List<Node>.mix(count: Int, mul: Long) = repeat(count) { onEach { it.move(size - 1, mul) } }
 
-    override fun part1(data: List<Int>) = linkedList(data).onEach { it.move(data.size - 1) }.let(::getSum)
+    private fun List<Node>.getSum() = generateSequence(first { it.value == 0 }) { it.getNext(1000) }
+        .take(4).drop(1).sumOf { it.value }
 
-    override fun part2(data: List<Int>) = linkedList(data).apply {
-        repeat(10) { forEach { it.move(data.size - 1, 811589153L) } }
-    }.let(::getSum) * 811589153L
+    override fun part1(data: List<Int>) = linkedList(data).apply { mix(1, 1L) }.getSum() * 1L
+
+    override fun part2(data: List<Int>) = linkedList(data).apply { mix(10, 811589153L) }.getSum() * 811589153L
 }
