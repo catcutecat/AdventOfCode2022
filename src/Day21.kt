@@ -15,7 +15,7 @@ object Day21 : Day.LineInput<Day21.Monkeys, Long>("21") {
         it.split(": ").let { (name, job) ->
             name to job.split(" ")
         }
-    }.let { Monkeys(it) }
+    }.let(::Monkeys)
 
     class Monkeys(private val data: Map<String, List<String>>) {
         private val cache = mutableMapOf<String, Long>()
